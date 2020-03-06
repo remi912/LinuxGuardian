@@ -11,7 +11,7 @@ echo -e "\n--------------------------------------------------\n\n"
 
 Erreur()
 {
-  echo -e "\n+--------------------[/!\]----------------------+\n\n"
+  echo -e "\n+--------------------[/+\]----------------------+\n\n"
   echo -e   "|                   Erreur                      |"
   echo -e "\n+-----------------------------------------------+\n\n"
   exit 2
@@ -25,7 +25,7 @@ fi
 
 repeter=-1
 attente=2							#Indique le temps d'attente entre chaque clollecte de données
-delay=300 							#Indique les delaie de mise ajour (Par defaut 300s = 5 minutes)
+delay=10 							#Indique les delaie de mise ajour (Par defaut 300s = 5 minutes)
 let check=$(($delay/$attente)) 	#Permet de determiner combien de donner il faut envoyer pour que le delai soit ecoule
 host="192.168.44.13"
 master="http://$host:8080" 			#L'adresse du serveur Monitoring
@@ -116,18 +116,26 @@ echo -e "\n--------------------------------------------------\n\n"
 #On verifie que il n'y a q'un seul bigBrother d'ouvert
 
 let i=0
+
 while  [ $i -ne $repeter ]
 do
 	
 	#Chek des updates ( one ne fait le chack que toutes les 5 minutes par defaut.)
+	echo -e "I : $i  check $(($i%$check))\n"
 	if [ $(($i%$check)) -eq 0 ]
 	then
-		echo -e "  - Verification des mises a jours $i"
-		wget -P /opt/bigBrother $master/update/bigBrother-software/update
+		
+		echo -e "\n\t  ---- Verification des mises a jour  $i ---"
+		wget -P /opt/bigBrother/ $master/update/bigBrother-software/update
+
 		if [ "$(sudo cat /opt/bigBrother/current_update | tail -1 )" != "$(sudo cat /opt/bigBrother/update | tail -1 )" ]
 		then
-			echo -e "\n\n  - Mise a jour detecte"
+			echo -e "\n+--------------------[ + ]----------------------+"
+  			echo -e   "|              Mise a jour detectee             |"
+  			echo -e "\n+-----------------------------------------------+\n\n"
+
 			cat /opt/bigBrother/update > /opt/bigBrother/current_update
+			rm /opt/bigBrother/update
 			echo -e "\n  - Chargement de la mise a jour"
 			wget -P /opt/bigBrother $master/update/bigBrother-software/$(cat /opt/bigBrother/current_update | tail -1 ) 1>/dev/null 2>/dev/null
 			chmod 777 /opt/bigBrother/$(cat /opt/bigBrother/current_update | tail -1 )
@@ -141,10 +149,12 @@ do
 			#nohup ./bigBrother-soft 1>/dev/null 2>/dev/null & 
 			echo -e "  - BigBrother\t\t[ok]"
 			echo -e "  - Maj \t\t[ok]\n\n"
-			echo "  - Exit"
+			echo "  - Restart"
+			cd /opt/bigBrother
+			exec ./bigBrother-soft
 			exit 1
 		fi
-		sudo rm /opt/bigBrother/update
+		rm /opt/bigBrother/update
 
 	fi
 
