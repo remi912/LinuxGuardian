@@ -110,7 +110,7 @@ try:
         client.username_pw_set(ACCESS_TOKEN)
             
         # Reconnect
-	    client.connect(THINGSBOARD_HOST, 1883, 60)
+	client.connect(THINGSBOARD_HOST, 1883, 60)
 
         next_reading += INTERVAL
         sleep_time = next_reading-time.time()
