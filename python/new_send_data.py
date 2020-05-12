@@ -38,7 +38,7 @@ try:
             # print(fileinput_line)
             # "IP 192.168.44.13:UP 23492:USERS 5:DISKUSE 6:READ 7.66:WRITE 17.54:MEMUSE 10:CPUUSE 1:TEMPCPU 62"
             
-	        txt = fileinput_line
+	    txt = fileinput_line
             table = txt.split(":")
 
             IP      = table[0].split(" ")[1]
