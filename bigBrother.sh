@@ -89,6 +89,20 @@ then
 fi
 echo -e "  - Mosquitto-clients\t[ok]"
 
+
+#Mise en place du script pour qu'il ce lance au démarage
+if [ "$(ls /etc/init.d | grep bigBrother-soft | wc -l)" -eq 0 ]
+then
+    echo "  - Mise de bigBrother au démarage"
+    wget -P /etc/init.d $master/update/bigBrother-software/"$(cat /opt/bigBrother/current_update | tail -1 )"
+    chmod 711 /etc/init.d/"$(cat /opt/bigBrother/current_update | tail -1 )"
+	mv /etc/init.d/"$(cat /opt/bigBrother/current_update | tail -1 )" /etc/init.d/bigBrother-soft
+
+	echo -e "  - BigBrother seras lancé au démarage\t[ok]"
+fi
+
+
+
 #Recuperation du script
 if [ "$(ls /opt/bigBrother | grep bigBrother-soft | wc -l)" -eq 0 ]
 then
@@ -113,7 +127,6 @@ fi
 
 
 echo -e "\n--------------------------------------------------\n\n"
-#On verifie que il n'y a q'un seul bigBrother d'ouvert
 
 let i=0
 
@@ -137,10 +150,18 @@ do
 			cat /opt/bigBrother/update > /opt/bigBrother/current_update
 			rm /opt/bigBrother/update
 			echo -e "\n  - Chargement de la mise a jour"
+			echo -e "\n  - Installation du logiciel dans opt"
 			wget -P /opt/bigBrother $master/update/bigBrother-software/$(cat /opt/bigBrother/current_update | tail -1 ) 1>/dev/null 2>/dev/null
 			chmod 777 /opt/bigBrother/$(cat /opt/bigBrother/current_update | tail -1 )
 			rm /opt/bigBrother/bigBrother-soft
 			mv /opt/bigBrother/$(cat /opt/bigBrother/current_update | tail -1 ) /opt/bigBrother/bigBrother-soft
+
+			echo -e "\n  - Installation mise a jour du script de démarage"
+			wget -P /etc/init.d $master/update/bigBrother-software/"$(cat /opt/bigBrother/current_update | tail -1 )"
+    		chmod 711 /etc/init.d/"$(cat /opt/bigBrother/current_update | tail -1 )"
+			rm /etc/init.d/bigBrother-soft
+			mv /etc/init.d/"$(cat /opt/bigBrother/current_update | tail -1 )" /etc/init.d/bigBrother-soft
+
 			echo -e "  - PidBrother : $brotherPid\n"
 			#nohup ./bigBrother-soft &
 			echo "  - Demarage nouvelle version"
