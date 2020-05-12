@@ -38,7 +38,7 @@ try:
             # print(fileinput_line)
             # "IP 192.168.44.13:UP 23492:USERS 5:DISKUSE 6:READ 7.66:WRITE 17.54:MEMUSE 10:CPUUSE 1:TEMPCPU 62"
             
-	        txt = fileinput_line
+	    txt = fileinput_line
             table = txt.split(":")
 
             IP      = table[0].split(" ")[1]
@@ -87,6 +87,12 @@ try:
                 ACCESS_TOKEN = '2F292r2McVD75tNatGmb'
             else:
                 ACCESS_TOKEN = 'TEST_SCRIPT_TOKEN'
+	    
+            # Change TOKEN
+            client.username_pw_set(ACCESS_TOKEN)
+            
+            # Reconnect
+	    client.connect(THINGSBOARD_HOST, 1883, 60)
 
             print(u"IP: {:s}, UP: {:g}, USERS: {:g}, DISKUSE: {:g}, READ: {:g}, WRITE: {:g}, MEMUSE: {:g}, CPUUSE: {:g}, TEMPCPU: {:g}\u00b0C".format(IP, UP, USERS, DISKUSE, READ, WRITE, MEMUSE, CPUUSE, TEMPCPU))
 
@@ -105,12 +111,6 @@ try:
             
 	    # Erase TOKEN and connection information
 	    client.reinitialise()
-
-        # Change TOKEN
-        client.username_pw_set(ACCESS_TOKEN)
-            
-        # Reconnect
-	client.connect(THINGSBOARD_HOST, 1883, 60)
 
         next_reading += INTERVAL
         sleep_time = next_reading-time.time()
