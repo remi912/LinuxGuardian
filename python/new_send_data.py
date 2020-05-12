@@ -87,6 +87,12 @@ try:
                 ACCESS_TOKEN = '2F292r2McVD75tNatGmb'
             else:
                 ACCESS_TOKEN = 'TEST_SCRIPT_TOKEN'
+	    
+            # Change TOKEN
+            client.username_pw_set(ACCESS_TOKEN)
+            
+            # Reconnect
+	    client.connect(THINGSBOARD_HOST, 1883, 60)
 
             print(u"IP: {:s}, UP: {:g}, USERS: {:g}, DISKUSE: {:g}, READ: {:g}, WRITE: {:g}, MEMUSE: {:g}, CPUUSE: {:g}, TEMPCPU: {:g}\u00b0C".format(IP, UP, USERS, DISKUSE, READ, WRITE, MEMUSE, CPUUSE, TEMPCPU))
 
@@ -105,12 +111,6 @@ try:
             
 	    # Erase TOKEN and connection information
 	    client.reinitialise()
-
-        # Change TOKEN
-        client.username_pw_set(ACCESS_TOKEN)
-            
-        # Reconnect
-	client.connect(THINGSBOARD_HOST, 1883, 60)
 
         next_reading += INTERVAL
         sleep_time = next_reading-time.time()
