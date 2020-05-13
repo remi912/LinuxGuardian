@@ -1,10 +1,0 @@
---2020-05-12 09:22:37--  http://192.168.44.13:8080/update/bigBrother-software/update
-Connecting to 192.168.44.13:8080... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 11
-Saving to: ‘/opt/bigBrother/update’
-
-update                0%[                    ]       0  --.-KB/s               update              100%[===================>]      11  --.-KB/s    in 0s      
-
-2020-05-12 09:22:37 (325 KB/s) - ‘/opt/bigBrother/update’ saved [11/11]
-
