@@ -90,6 +90,7 @@ try:
 	    
             # Change TOKEN
             client.username_pw_set(ACCESS_TOKEN)
+            THINGSBOARD_HOST = '192.70.36.95'
             
             # Reconnect
 	    client.connect(THINGSBOARD_HOST, 1883, 60)
