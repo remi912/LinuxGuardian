@@ -62,6 +62,18 @@ then
     echo -e "  - Repertoire\t\t[ok]"
 fi
 
+
+if [ "$(ls -l /opt/bigBrother | grep utils | wc -l )" -eq 0 ]
+then
+   echo -e " - Téléchargement des paramètres de sécurité"
+   mkdir /opt/bigBrother/utils
+   wget -P /opt/bigBrother/utils $master/utils/ca.crt
+   wget -P /opt/bigBrother/utils $master/utils/client.crt
+   wget -P /opt/bigBrother/utils $master/utils/client.key   
+   echo -e " - Paramètres de sécurité : [ok]"	
+
+fi
+
  #Creation du fichier de maj
 if [ "$(ls -l /opt/bigBrother/ | grep current_update | wc -l )" -eq 0 ] 
 then
@@ -127,6 +139,7 @@ fi
 
 
 echo -e "\n--------------------------------------------------\n\n"
+#On verifie que il n'y a q'un seul bigBrother d'ouvert
 
 let i=0
 
@@ -211,7 +224,8 @@ do
 	echo -e "Temperature CPU : $tempHuman°c\n"
 	
 	#Envoie des données
-	mosquitto_pub -h $host -t 'test/topic' -m "IP $ip:UP $upTime:USERS $nbUser:DISKUSE $diskUsage:READ $reading:WRITE $writing:MEMUSE $pourcentMem:CPUUSE $procUsage:TEMPCPU $tempHuman"
+
+	mosquitto_pub --cafile /opt/bigBrother/utils/ca.crt --cert /opt/bigBrother/utils/client.crt --key /opt/bigBrother/utils/client.key -d -h $host -p 1883 -t 'test/topic' -m "IP $ip:UP $upTime:USERS $nbUser:DISKUSE $diskUsage:READ $reading:WRITE $writing:MEMUSE $pourcentMem:CPUUSE $procUsage:TEMPCPU $tempHuman" -q 2
 	echo -e "\nDonne envoye \n\n"
 
 	i=$((i+1))
